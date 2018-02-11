@@ -1,3 +1,10 @@
+#
+# google-image-extractor: Utility to search and download images
+#                         from google image search
+#
+# Author: Sagar R. Jadhav <sagarrjadhav.03@gmail.com>
+# Version: 1.0
+
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import json

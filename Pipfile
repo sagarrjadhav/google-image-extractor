@@ -8,6 +8,12 @@ name = "pypi"
 [packages]
 
 selenium = "*"
+"bs4" = "*"
+requests = "*"
+pillow = "*"
+"progressbar2" = "*"
+humanfriendly = "*"
+termcolor = "*"
 
 
 [dev-packages]

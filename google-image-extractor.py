@@ -6,6 +6,8 @@
 # Version: 1.0
 #
 
+"""Imports"""
+
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import json

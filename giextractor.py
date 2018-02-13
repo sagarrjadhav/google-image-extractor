@@ -8,17 +8,24 @@
 
 """Imports"""
 
+# manipulating and accessing web pages
 from selenium import webdriver
 from bs4 import BeautifulSoup
-import json
-import time
 from selenium.common.exceptions import ElementNotVisibleException
+
+# Downloading images
 import requests
 import mimetypes
 from PIL import Image
 from io import BytesIO
-import os
+
+# multi-processing support
 from multiprocessing.dummy import Pool
+
+# miscellaneous
+import json
+import time
+import os
 from progressbar import (ProgressBar, Percentage, Bar,
                          AdaptiveETA, FileTransferSpeed)
 from humanfriendly import format_timespan

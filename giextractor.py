@@ -43,7 +43,7 @@ class GoogleImageExtractor:
     downloadProgressBar = None
     argParser = None
 
-    def __init__(self, imageQuery, imageCount, destinationFolder, threadCount):
+    def __init__(self, imageQuery, imageCount=100, destinationFolder='./', threadCount=4):
         """
         Initializes the GoogleImageExtractor class instance
 
@@ -80,7 +80,7 @@ class GoogleImageExtractor:
     @staticmethod
     def initialize_arg_parser():
         """
-        Initializes the option parser with the options - 
+        Initializes the option parser with the options -
             -q --image-query {[str]} -- [Image Search Query]
             -n --image-count {[int]} -- [Count of images that need to be downloaded]
             -f --destination-folder {[str]} -- [Download Destination Folder]
@@ -93,24 +93,24 @@ class GoogleImageExtractor:
         # Add the required arguments
         requiredArguments = GoogleImageExtractor.argParser.add_argument_group(
             'required arguments')
-        requiredArguments.add_argument("-q", "--image-query", dest="imageQuery",
-                                       type=str, required=True, help="Image Search Query",
-                                       metavar="<image_query>")
-
-        requiredArguments.add_argument("-f", "--destination-folder", dest="destinationFolder",
-                                       type=str, required=True, help="Download Destination Folder",
-                                       metavar="<destination_folder>")
+        requiredArguments.add_argument('-q', '--image-query', dest='imageQuery',
+                                       type=str, required=True, help='Image Search Query',
+                                       metavar='<image_query>')
 
         # Add the optional arguments
         optionalArguments = GoogleImageExtractor.argParser.add_argument_group(
             'optional arguments')
-        optionalArguments.add_argument("-n", "--image-count", dest="imageCount",
-                                       type=int, help="Count of images that neeed to be extracted",
-                                       metavar="<image_count>", default=100)
+        optionalArguments.add_argument('-f', '--destination-folder', dest='destinationFolder',
+                                       type=str, help='Download Destination Folder, default is the current folder',
+                                       metavar='<destination_folder>', default="./")
 
-        optionalArguments.add_argument("-t", "--thread-count", dest="threadCount",
-                                       type=int, help="Count of threads, to parallelize download of images",
-                                       metavar="<thread_count>", default=4)
+        optionalArguments.add_argument('-n', '--image-count', dest='imageCount',
+                                       type=int, help='Count of images that neeed to be extracted',
+                                       metavar='<image_count>', default=100)
+
+        optionalArguments.add_argument('-t', '--thread-count', dest='threadCount',
+                                       type=int, help='Count of threads, to parallelize download of images',
+                                       metavar='<thread_count>', default=4)
 
     def _initialize_chrome_options(self):
         """Initializes options for the chrome driver"""
@@ -120,7 +120,7 @@ class GoogleImageExtractor:
 
     def extract_images(self):
         """
-        Searches across Google Image Search with the specified image query and 
+        Searches across Google Image Search with the specified image query and
         downloads the specified count of images
         """
 
@@ -195,7 +195,7 @@ class GoogleImageExtractor:
 
     def _download_images(self):
         """
-        Downloads the images from the retrieved image URLs and 
+        Downloads the images from the retrieved image URLs and
         stores in the specified destination folder.
         Multiprocessing is being used to minimize the download time
         """
@@ -262,7 +262,7 @@ class GoogleImageExtractor:
 
     def _create_storage_folder(self):
         '''
-            Creates a storage folder using the query name by replacing 
+            Creates a storage folder using the query name by replacing
             spaces in the query with '_' (underscore)
         '''
 

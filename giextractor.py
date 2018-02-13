@@ -3,8 +3,13 @@
 #                         from google image search
 #
 # Author: Sagar R. Jadhav <sagarrjadhav.03@gmail.com>
-# Version: 1.0
+# Version: 1.0.0b1 (Beta)
 #
+
+__author__ = 'Sagar R. Jadhav (sagarrjadhav.03@gmail.com)'
+__version__ = '1.0.0b1'
+__copyright__ = 'Copyright (c) 2018 Sagar Jadhav'
+__license__ = 'MIT'
 
 """Imports"""
 
@@ -13,7 +18,7 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import ElementNotVisibleException
 
-# Downloading images
+# downloading images
 import requests
 import mimetypes
 from PIL import Image

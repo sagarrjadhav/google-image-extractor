@@ -10,7 +10,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name='google-image-extractor',
-    version='1.0.2b1',
+    version='1.0.3b1',
     description='Utility to search and download images from google image search',
     long_description='Utility to search and download images from google image search',
     url='https://github.com/Stryker0301/google-image-extractor',

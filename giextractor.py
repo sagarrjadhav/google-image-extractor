@@ -7,7 +7,7 @@
 #
 
 __author__ = 'Sagar R. Jadhav (sagarrjadhav.03@gmail.com)'
-__version__ = '1.0.2b1'
+__version__ = '1.0.3b1'
 __copyright__ = 'Copyright (c) 2018 Sagar Jadhav'
 __license__ = 'MIT'
 
@@ -49,11 +49,10 @@ class GoogleImageExtractor:
     _storageFolder = ''
     _destinationFolder = ''
     _imageCounter = 1
-    _threadCount = 0
     _downloadProgressBar = None
     __argParser = None
 
-    def __init__(self, imageQuery, imageCount=100, destinationFolder='./', threadCount=4):
+    def __init__(self, imageQuery, imageCount=100, destinationFolder='./'):
         """
         Initializes the GoogleImageExtractor class instance
 
@@ -61,13 +60,11 @@ class GoogleImageExtractor:
             imageQuery {[str]} -- [Image Search Query]
             imageCount {[int]} -- [Count of images that need to be downloaded]
             destinationFolder {[str]} -- [Download Destination Folder]
-            threadCount {[int]} -- [Count of Threads, to parallelize download of images]
         """
 
         self._imageQuery = imageQuery
         self._imageCount = imageCount
         self._destinationFolder = destinationFolder
-        self._threadCount = threadCount
 
         self._initialize_chrome_driver()
 
@@ -94,7 +91,6 @@ class GoogleImageExtractor:
             -q --image-query {[str]} -- [Image Search Query]
             -n --image-count {[int]} -- [Count of images that need to be downloaded]
             -f --destination-folder {[str]} -- [Download Destination Folder]
-            -t --thread-count {[int]} -- [Count of Threads, to parallelize download of images]
         """
 
         GoogleImageExtractor.__argParser = ArgumentParser(
@@ -117,10 +113,6 @@ class GoogleImageExtractor:
         optionalArguments.add_argument('-n', '--image-count', dest='imageCount',
                                        type=int, help='Count of images that neeed to be extracted',
                                        metavar='<image_count>', default=100)
-
-        optionalArguments.add_argument('-t', '--thread-count', dest='threadCount',
-                                       type=int, help='Count of threads, to parallelize download of images',
-                                       metavar='<thread_count>', default=4)
 
     def _initialize_chrome_options(self):
         """Initializes options for the chrome driver"""

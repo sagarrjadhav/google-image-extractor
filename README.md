@@ -15,13 +15,17 @@ pip install google-image-extractor
 ```
 
 ### Usage
+
+Python Code - 
 ```python
 from giextractor import GoogleImageExtractor
 
-imageExtractor = GoogleImageExtractor(imageQuery='apple fruit')
+imageExtractor = GoogleImageExtractor(imageQuery='apple fruit', imageCount=500)
 imageExtractor.extract_images()
 ```
 
 #### Bug Reporting
 This library is still in beta and is expected to have bugs.
 Please submit a bug report, if you come across any while using this library.
+
+New features to improve this library would be introduced as and when required.

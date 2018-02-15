@@ -7,7 +7,7 @@
 #
 
 __author__ = 'Sagar R. Jadhav (sagarrjadhav.03@gmail.com)'
-__version__ = '1.0.0b1'
+__version__ = '1.0.2b1'
 __copyright__ = 'Copyright (c) 2018 Sagar Jadhav'
 __license__ = 'MIT'
 
@@ -24,10 +24,6 @@ import mimetypes
 from mimetypes import MimeTypes
 from PIL import Image
 from io import BytesIO
-
-# multi-processing support
-from multiprocessing.dummy import Pool
-import threading
 
 # miscellaneous
 import json
@@ -56,7 +52,6 @@ class GoogleImageExtractor:
     _threadCount = 0
     _downloadProgressBar = None
     __argParser = None
-    _imageCounterLock = None
 
     def __init__(self, imageQuery, imageCount=100, destinationFolder='./', threadCount=4):
         """
@@ -236,8 +231,6 @@ class GoogleImageExtractor:
 
         self._downloadProgressBar = ProgressBar(
             widgets=widgets, max_value=self._imageCount).start()
-
-        self._imageCounterLock = threading.Lock()
 
     def _download_image(self, imageURL):
         """

@@ -27,6 +27,7 @@ from io import BytesIO
 
 # multi-processing support
 from multiprocessing.dummy import Pool
+import threading
 
 # miscellaneous
 import json
@@ -51,10 +52,11 @@ class GoogleImageExtractor:
     _imageCount = 0
     _storageFolder = ''
     _destinationFolder = ''
-    _imageCounter = 0
+    _imageCounter = 1
     _threadCount = 0
     _downloadProgressBar = None
     __argParser = None
+    _imageCounterLock = None
 
     def __init__(self, imageQuery, imageCount=100, destinationFolder='./', threadCount=4):
         """
@@ -218,13 +220,7 @@ class GoogleImageExtractor:
         try:
             self._initialize_progress_bar()
 
-            # # Initialize and assign work to the threads in the threadpool
-            # threadPool = Pool(self._threadCount)
-            # threadPool.map(self._download_image, self._imageURLs)
-
-            # threadPool.close()
-            # threadPool.join()
-
+            # Download each image individually
             [self._download_image(imageURL) for imageURL in self._imageURLs]
 
             self._downloadProgressBar.finish()
@@ -240,6 +236,8 @@ class GoogleImageExtractor:
 
         self._downloadProgressBar = ProgressBar(
             widgets=widgets, max_value=self._imageCount).start()
+
+        self._imageCounterLock = threading.Lock()
 
     def _download_image(self, imageURL):
         """
@@ -274,8 +272,9 @@ class GoogleImageExtractor:
             image = Image.open(BytesIO(imageResponse.content))
             image.save(imageFileName)
 
-            self._imageCounter += 1
+            # print(str(threading.get_ident()) + ' ' + str(self._imageCounter))
             self._downloadProgressBar.update(self._imageCounter)
+            self._imageCounter += 1
 
         except Exception as exception:
             pass

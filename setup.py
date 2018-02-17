@@ -12,7 +12,10 @@ setup(
     name='google-image-extractor',
     version='1.0.3b1',
     description='Utility to search and download images from google image search',
-    long_description='Utility to search and download images from google image search',
+    long_description='Library to help download images from Google Image Search for various machine learning and image classification tasks.' +
+                     'This library uses web scrapping using selenium to download images from google image search.' +
+                     'But the way this library is different from other similar ones is that it utilizes headless chrome to perform this activity,' +
+                     'this means that it does not need an UI shell to execute and that it can be used in server environments as well.',
     url='https://github.com/Stryker0301/google-image-extractor',
     author='Sagar R. Jadhav',
     author_email='sagarrjadhav.03@gmail.com',

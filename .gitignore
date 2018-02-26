@@ -2,5 +2,6 @@
 build/
 __pycache__/
 dist/
+images/
 google_image_extractor.egg-info
 pipfile

@@ -3,11 +3,11 @@
 #                         from google image search
 #
 # Author: Sagar R. Jadhav <sagarrjadhav.03@gmail.com>
-# Version: 1.0.0b1 (Beta)
+# Version: 1.0.4b1 (Beta)
 #
 
 __author__ = 'Sagar R. Jadhav (sagarrjadhav.03@gmail.com)'
-__version__ = '1.0.3b1'
+__version__ = '1.0.4b1'
 __copyright__ = 'Copyright (c) 2018 Sagar Jadhav'
 __license__ = 'MIT'
 
@@ -24,6 +24,9 @@ import mimetypes
 from mimetypes import MimeTypes
 from PIL import Image
 from io import BytesIO
+
+# multi-processing support
+from multiprocessing.dummy import Pool
 
 # miscellaneous
 import json
@@ -46,34 +49,32 @@ class GoogleImageExtractor:
     WAIT_TIME = 3.0
     _imageQuery = ''
     _imageCount = 0
+    _threadCount = 0
     _storageFolder = ''
     _destinationFolder = ''
     _imageCounter = 1
     _downloadProgressBar = None
     __argParser = None
 
-    def __init__(self, imageQuery, imageCount=100, destinationFolder='./'):
-        """
-        Initializes the GoogleImageExtractor class instance
+    # def __init__(self):
+    #     """
+    #     Initializes the GoogleImageExtractor class instance
 
-        Arguments:
-            imageQuery {[str]} -- [Image Search Query]
-            imageCount {[int]} -- [Count of images that need to be downloaded]
-            destinationFolder {[str]} -- [Download Destination Folder]
-        """
+    #     Arguments:
+    #         imageQuery {[str]} -- [Image Search Query]
+    #         imageCount {[int]} -- [Count of images that need to be downloaded]
+    #         destinationFolder {[str]} -- [Download Destination Folder]
+    #         threadCount {[int]} -- [Count of Threads, to parallelize download of images]
+    #     """
 
-        self._imageQuery = imageQuery
-        self._imageCount = imageCount
-        self._destinationFolder = destinationFolder
-
-        self._initialize_chrome_driver()
+    #     self._initialize_chrome_driver()
 
     def _initialize_chrome_driver(self):
         """Initializes chrome in headless mode"""
 
         try:
 
-            print(colored('\n Initializing Headless Chrome...\n', 'yellow'))
+            print(colored('\nInitializing Headless Chrome...\n', 'yellow'))
             self._initialize_chrome_options()
             self._chromeDriver = webdriver.Chrome(
                 chrome_options=self._chromeOptions)
@@ -91,6 +92,7 @@ class GoogleImageExtractor:
             -q --image-query {[str]} -- [Image Search Query]
             -n --image-count {[int]} -- [Count of images that need to be downloaded]
             -f --destination-folder {[str]} -- [Download Destination Folder]
+            -t --thread-count {[int]} -- [Count of Threads, to parallelize download of images]
         """
 
         GoogleImageExtractor.__argParser = ArgumentParser(
@@ -114,17 +116,39 @@ class GoogleImageExtractor:
                                        type=int, help='Count of images that neeed to be extracted',
                                        metavar='<image_count>', default=100)
 
+        optionalArguments.add_argument('-t', '--thread-count', dest='threadCount',
+                                       type=int, help='Count of threads, to parallelize download of images',
+                                       metavar='<thread_count>', default=4)
+
     def _initialize_chrome_options(self):
         """Initializes options for the chrome driver"""
 
         self._chromeOptions = webdriver.ChromeOptions()
         self._chromeOptions.add_argument('headless')
 
-    def extract_images(self):
+    def extract_images(self, imageQuery, imageCount=100, destinationFolder='./', threadCount=4):
         """
         Searches across Google Image Search with the specified image query and
         downloads the specified count of images
+
+        Arguments:
+            imageQuery {[str]} -- [Image Search Query]
+
+        Keyword Arguments:
+            imageCount {[int]} -- [Count of images that need to be downloaded]
+            destinationFolder {[str]} -- [Download Destination Folder]
+            threadCount {[int]} -- [Count of Threads, to parallelize download of images]
+
         """
+
+        # Initialize the chrome driver
+        self._initialize_chrome_driver()
+
+        # Initialize the image download parameters
+        self._imageQuery = imageQuery
+        self._imageCount = imageCount
+        self._destinationFolder = destinationFolder
+        self._threadCount = threadCount
 
         self._get_image_urls()
         self._create_storage_folder()
@@ -134,6 +158,15 @@ class GoogleImageExtractor:
         print(colored('\n\nImages Downloaded: ' +
                       str(self._imageCounter) + ' of ' + str(self._imageCount) + ' in ' +
                       format_timespan(self._downloadProgressBar.data()['total_seconds_elapsed']) + '\n', 'green'))
+
+        # Terminate the chrome instance
+        self._chromeDriver.close()
+        self._reset_helper_variables()
+
+    def _reset_helper_variables(self):
+        self._imageURLsExtractedCount = 0
+        self._imageCounter = 0
+        self._imageURLs = []
 
     @staticmethod
     def interpret_arguments():
@@ -158,9 +191,6 @@ class GoogleImageExtractor:
         # Slice the list of image URLs to contain the exact number of image
         # URLs that have been requested
         # self._imageURLs = self._imageURLs[:self._imageCount]
-
-        # Terminate the chrome instance
-        self._chromeDriver.close()
 
         print(colored('Image URLs retrieved.', 'green'))
 
@@ -207,8 +237,15 @@ class GoogleImageExtractor:
         try:
             self._initialize_progress_bar()
 
+            # Initialize and assign work to the threads in the threadpool
+            threadPool = Pool(self._threadCount)
+            threadPool.map(self._download_image, self._imageURLs)
+
+            threadPool.close()
+            threadPool.join()
+
             # Download each image individually
-            [self._download_image(imageURL) for imageURL in self._imageURLs]
+            # [self._download_image(imageURL) for imageURL in self._imageURLs]
 
             self._downloadProgressBar.finish()
 
@@ -257,9 +294,8 @@ class GoogleImageExtractor:
             image = Image.open(BytesIO(imageResponse.content))
             image.save(imageFileName)
 
-            # print(str(threading.get_ident()) + ' ' + str(self._imageCounter))
-            self._downloadProgressBar.update(self._imageCounter)
             self._imageCounter += 1
+            self._downloadProgressBar.update(self._imageCounter)
 
         except Exception as exception:
             pass
@@ -306,6 +342,6 @@ if __name__ == '__main__':
     args = GoogleImageExtractor.interpret_arguments()
 
     # Initialize the GoogleImageExtractor and extract the images
-    imageExtractor = GoogleImageExtractor(
+    imageExtractor = GoogleImageExtractor()
+    imageExtractor.extract_images(
         args.imageQuery, args.imageCount, args.destinationFolder, args.threadCount)
-    imageExtractor.extract_images()

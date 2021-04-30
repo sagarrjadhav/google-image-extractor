@@ -54,7 +54,7 @@ python-utils==2.3.0
 pytz==2017.3
 requests==2.18.4
 requests-toolbelt==0.8.0
-rsa==4.1
+rsa==4.7
 selenium==3.9.0
 simplejson==3.13.2
 SimplePool==0.1

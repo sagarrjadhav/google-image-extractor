@@ -10,7 +10,7 @@ chardet==3.0.4
 colorama==0.3.9
 cssselect==1.0.3
 cx-Freeze==5.1.1
-Django==2.2.20
+Django==2.2.27
 docopt==0.6.2
 enum34==1.1.6
 ez-setup==0.9

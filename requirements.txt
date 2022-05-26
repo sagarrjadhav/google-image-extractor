@@ -61,7 +61,7 @@ SimplePool==0.1
 six==1.11.0
 snowballstemmer==1.2.1
 SQLAlchemy==1.2.2
-tensorflow==2.4.0
+tensorflow==2.7.2
 tensorflow-tensorboard==0.4.0rc3
 termcolor==1.1.0
 tqdm==4.19.5

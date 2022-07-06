@@ -19,7 +19,7 @@ future==0.16.0
 google-api-python-client==1.6.4
 google-image-extractor==1.0.3b1
 -e git+https://github.com/NikolaiT/GoogleScraper.git@65682f847d236eaad1a0e89e8d59b8daf2648765#egg=GoogleScraper
-html5lib==0.9999999
+html5lib==0.999999999
 httplib2==0.19.0
 humanfriendly==4.8
 idna==2.6
